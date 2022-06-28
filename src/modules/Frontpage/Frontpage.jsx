@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import geolib from "geolib";
-import { Card, Button, Container, Row, Col } from "react-bootstrap";
+
+import { Container, Row, Col } from "react-bootstrap";
 import RenderedCards from "./RenderedCards";
 
 const Frontpage = () => {
@@ -19,7 +19,7 @@ const Frontpage = () => {
     const x =
       (lon2 - currentLongitude) * Math.cos((currentLatitude + lat2) / 2);
     const y = lat2 - currentLatitude;
-    const d = Math.round((Math.sqrt(x * x + y * y) * R) / 10000); // Rounding to KM
+    const d = Math.round((Math.sqrt(x * x + y * y) * R) / 10000);
     data3.push(d);
     return d;
   }
@@ -33,20 +33,14 @@ const Frontpage = () => {
     const response = await fetch("http://localhost:3001/data");
     if (response.ok) {
       let data = await response.json();
-      console.log(data);
+      /* console.log(data); */
       setDataState(data);
       if (data) {
         data.map((d) => {
           pythagoreanDistanceBetweenPoints(d.location.lat, d.location.lon);
-          console.log(data3, "data3");
+          /* console.log(data3, "data3"); */
 
           setDistance(data3);
-          /* setMergedArray(
-            DataState.map((d, index) => ({
-              ...d,
-              distance_from_current_Location: data3[index],
-            }))
-          ); */
         });
       }
     }
@@ -88,23 +82,22 @@ const Frontpage = () => {
   const error = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
   };
-
+  const selectedShops = mergedArray.sort((a, b) =>
+    a.distance_from_current_Location > b.distance_from_current_Location ? 1 : -1
+  );
+  /*   console.log("Selected shops: ", selectedShops);
+   */
   return (
     <div>
-      <Row>
-        {mergedArray.map((array) => (
-          <RenderedCards key={array._id} array={array} />
-        ))}
-      </Row>
-
-      {/* <Container>
+      <Container>
         <Row>
-          <Col xs={6}>
-            <h1>Shops nearby</h1>
-            {mergedArray && <RenderedCards mergedArray={mergedArray} />}
+          <Col sm={12}>
+            {selectedShops.slice(0, 5).map((array) => (
+              <RenderedCards key={array._id} array={array} />
+            ))}
           </Col>
         </Row>
-      </Container> */}
+      </Container>
     </div>
   );
 };
