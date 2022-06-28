@@ -91,14 +91,20 @@ const Frontpage = () => {
 
   return (
     <div>
-      <Container>
+      <Row>
+        {mergedArray.map((array) => (
+          <RenderedCards key={array._id} array={array} />
+        ))}
+      </Row>
+
+      {/* <Container>
         <Row>
           <Col xs={6}>
             <h1>Shops nearby</h1>
             {mergedArray && <RenderedCards mergedArray={mergedArray} />}
           </Col>
         </Row>
-      </Container>
+      </Container> */}
     </div>
   );
 };
